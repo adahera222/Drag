@@ -13,6 +13,7 @@ public class Car : MonoBehaviour {
 	public float speed = 0;
 	public int hittimes = 0;
 	public ProgressBar speedometor;
+	public WheelCollider[] wheels;
 	void OnEnable()
 	{
 		Inputron.StartAccelerate += OnStartAccelerate;
@@ -112,11 +113,11 @@ public class Car : MonoBehaviour {
 		}
 	}
 
-	void Update () {
+	void FixedUpdate () {
 		if(currentGear >= 0){
 			if(accelerating){
 				if(speed < maxSpeeds[currentGear]){
-					speed += accelerations[currentGear]*Time.deltaTime;
+					speed += accelerations[currentGear] * Time.deltaTime;
 				}
 			}
 			if(speed > 0){
@@ -129,7 +130,9 @@ public class Car : MonoBehaviour {
 			}
 			speedometor.SetProgress(speed / maxSpeeds[currentGear]);
 		}
-		
-		transform.position = Vector3.Lerp(transform.position, transform.position+Vector3.forward*speed, Time.deltaTime);
+		foreach (var o in wheels) {
+			o.motorTorque = speed;
+		}
+		//transform.position = Vector3.Lerp(transform.position, transform.position+Vector3.forward*speed, Time.deltaTime);
 	}	
 }
